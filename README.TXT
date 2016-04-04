@@ -19,3 +19,12 @@ This project was written to illustrate the use of enums to support
 language independence of the game logic.
 
 Read chapter 7 of the book to get a detailed description of the project.
+
+Edward Pisco
+CISY 242-51X
+Map Text Adventure 
+
+Added 7 more rooms. Added look and eat methods. Added Item Class.
+
+
+

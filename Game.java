@@ -11,8 +11,8 @@
  *  rooms, creates the parser and starts the game.  It also evaluates and
  *  executes the commands that the parser returns.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2011.08.10
+ * @author  Edward Pisco
+ * @version 2016.04.04
  */
 
 public class Game 
@@ -34,14 +34,21 @@ public class Game
      */
     private void createRooms()
     {
-        Room outside, theater, pub, lab, office;
+        Room outside, theater, pub, lab, office, atrium, security, library, bookstore, freddy , jason, zombie;
       
         // create the rooms
-        outside = new Room("outside the main entrance of the university");
-        theater = new Room("in a lecture theater");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
+        outside = new Room("outside the main entrance of the university", " No Items", 0);
+        theater = new Room("in a lecture theater", " No Items", 0);
+        pub = new Room("in the campus pub", "Piano", 1);
+        lab = new Room("in a computing lab", "Lab Rats", 5);
+        office = new Room("in the computing admin office", "Computers" , 10);
+        atrium = new Room("In the Atrium","There is a MG3 Machine Gun, yoou'll need it!", 1);
+        library = new Room("In the library", "No Items", 0);
+        freddy = new Room("It's Freddy!, welcome to my nightmare", "No items", 0);
+        jason = new Room("kill....kill...kill...now...now..now!...RUN!", "No items", 0);
+        zombie = new Room("Zombie outbreak!", "Zombie virus antitode", 1);
+        bookstore = new Room("In the bookstore", "No items", 0);
+        security = new Room("In the security office", "No one is here", 0);
         
         // initialise room exits
         outside.setExit("east", theater);
@@ -54,9 +61,42 @@ public class Game
 
         lab.setExit("north", outside);
         lab.setExit("east", office);
+        lab.setExit("west", library);
 
         office.setExit("west", lab);
+        
+        // new room exits
+        
+        library.setExit("east", lab);
+        library.setExit("north", pub);
+        
+        office.setExit("east", lab);
+        office.setExit("south", atrium);
+        atrium.setExit("north", office);
+        
+        atrium.setExit("west", bookstore);
+        atrium.setExit("north", office);
+        atrium.setExit("south", jason);
+        
+        bookstore.setExit("north", lab);
+        bookstore.setExit("south", zombie);
+        bookstore.setExit("north", lab);
 
+        jason.setExit("north", atrium);
+        jason.setExit("west", zombie);
+        jason.setExit("south", freddy);
+        
+        zombie.setExit("north", bookstore);
+        zombie.setExit("east", jason);
+        zombie.setExit("south", security);
+        
+        freddy.setExit("north", jason);
+        freddy.setExit("west", security);
+       
+        security.setExit("east", freddy);
+        security.setExit("north", zombie);
+       
+        
         currentRoom = outside;  // start game outside
     }
 
@@ -118,6 +158,14 @@ public class Game
             case QUIT:
                 wantToQuit = quit(command);
                 break;
+                
+            case LOOK:
+                look();
+                break;
+                
+            case EAT:
+                eat();
+                break;
         }
         return wantToQuit;
     }
@@ -137,13 +185,34 @@ public class Game
         System.out.println("Your command words are:");
         parser.showCommands();
     }
-
+    private void printLocationInfo()
+    {
+        System.out.println("Your are " + currentRoom.getLongDescription());
+        System.out.println("Exists: ");
+        if(currentRoom.northExit != null)
+        {
+            System.out.println("north ");
+        }
+         if(currentRoom.eastExit != null)
+        {
+            System.out.println("east "); 
+        }
+            if(currentRoom.southExit != null)
+        {
+            System.out.println("south ");
+        }
+        if(currentRoom.westExit != null)
+        {
+            System.out.println("west ");
+        }
+    }
     /** 
      * Try to go in one direction. If there is an exit, enter the new
      * room, otherwise print an error message.
      */
     private void goRoom(Command command) 
     {
+        {
         if(!command.hasSecondWord()) {
             // if there is no second word, we don't know where to go...
             System.out.println("Go where?");
@@ -162,6 +231,16 @@ public class Game
             currentRoom = nextRoom;
             System.out.println(currentRoom.getLongDescription());
         }
+    }
+    }
+    private void look()
+    {
+        System.out.println("Here is your current location");
+        System.out.println(currentRoom.getLongDescription());
+    }
+    private void eat()
+    {
+        System.out.println("You have eaten now and you are not hungry anymore");
     }
 
     /** 
